@@ -1,0 +1,63 @@
+function classifyODE() {
+    const ode = document.getElementById('ode-input').value;
+    document.getElementById('order').textContent = '';
+    document.getElementById('linearity').textContent = '';
+    document.getElementById('homogeneity').textContent = '';
+    document.getElementById('properties').textContent = '';
+
+    // Determine the order of the ODE
+    const order = getOrder(ode);
+    document.getElementById('order').textContent = `Order: ${order}`;
+
+    // Determine if the ODE is linear
+    const isLinear = checkLinearity(ode);
+    document.getElementById('linearity').textContent = `Linearity: ${isLinear ? 'Linear' : 'Non-linear'}`;
+
+    // Determine if the ODE is homogeneous
+    const isHomogeneous = checkHomogeneity(ode);
+    document.getElementById('homogeneity').textContent = `Homogeneity: ${isHomogeneous ? 'Homogeneous' : 'Non-homogeneous'}`;
+
+    // Display properties and behaviors
+    const properties = getProperties(order, isLinear, isHomogeneous);
+    document.getElementById('properties').textContent = properties;
+}
+
+function getOrder(ode) {
+    const matches = ode.match(/y\^?\d*'/g);
+    if (matches) {
+        const orders = matches.map(m => (m.match(/'/g) || []).length);
+        return Math.max(...orders);
+    }
+    return 1;
+}
+
+function checkLinearity(ode) {
+    const nonLinearTerms = /\by(?:\d*\^|[^']*[^ +\-*\/\dy'])|e\^|sin|cos|tan|log|exp/;
+    return !nonLinearTerms.test(ode);
+}
+
+function checkHomogeneity(ode) {
+    const rhs = ode.split('=')[1];
+    return rhs && rhs.trim() === '0';
+}
+
+function getProperties(order, isLinear, isHomogeneous) {
+    let properties = `This is a ${order}-order `;
+    properties += isLinear ? 'linear' : 'non-linear';
+    properties += isHomogeneous ? ' homogeneous ' : ' non-homogeneous ';
+    properties += 'ODE.\n';
+
+    if (isLinear) {
+        properties += 'Linear ODEs have well-defined solution techniques, such as the method of undetermined coefficients and variation of parameters.';
+    } else {
+        properties += 'Non-linear ODEs are generally more complex and may exhibit chaotic behavior. Solutions may require numerical methods or qualitative analysis.';
+    }
+
+    if (isHomogeneous) {
+        properties += ' Homogeneous ODEs can often be solved by finding the characteristic equation and solving for the roots.';
+    } else {
+        properties += ' Non-homogeneous ODEs require finding a particular solution in addition to the homogeneous solution.';
+    }
+
+    return properties;
+}
