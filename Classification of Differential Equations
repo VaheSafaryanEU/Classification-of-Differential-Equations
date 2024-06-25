@@ -5,19 +5,15 @@ function classifyODE() {
     document.getElementById('homogeneity').textContent = '';
     document.getElementById('properties').textContent = '';
 
-    // Determine the order of the ODE
     const order = getOrder(ode);
     document.getElementById('order').textContent = `Order: ${order}`;
 
-    // Determine if the ODE is linear
     const isLinear = checkLinearity(ode);
     document.getElementById('linearity').textContent = `Linearity: ${isLinear ? 'Linear' : 'Non-linear'}`;
 
-    // Determine if the ODE is homogeneous
     const isHomogeneous = checkHomogeneity(ode);
     document.getElementById('homogeneity').textContent = `Homogeneity: ${isHomogeneous ? 'Homogeneous' : 'Non-homogeneous'}`;
 
-    // Display properties and behaviors
     const properties = getProperties(order, isLinear, isHomogeneous);
     document.getElementById('properties').textContent = properties;
 }
